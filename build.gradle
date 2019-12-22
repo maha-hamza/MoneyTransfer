@@ -1,0 +1,99 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+
+group ''
+version '0.0.1'
+
+mainClassName = 'ApplicationKt'
+
+sourceSets {
+    main.kotlin.srcDirs = main.java.srcDirs = ['src']
+    test.kotlin.srcDirs = test.java.srcDirs = ['test']
+    main.resources.srcDirs = ['resources']
+    test.resources.srcDirs = ['testresources']
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'https://kotlin.bintray.com/ktor' }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    compile "io.ktor:ktor-server-netty:$ktor_version"
+    compile "ch.qos.logback:logback-classic:$logback_version"
+    compile "io.ktor:ktor-server-core:$ktor_version"
+    compile "io.ktor:ktor-jackson:$ktor_version"
+
+    //dependency injection
+    compile("org.koin:koin-core:$koinVersion")
+    compile("org.koin:koin-core-ext:$koinVersion")
+    compile("org.koin:koin-ktor:$koinVersion")
+    compile("org.koin:koin-logger-slf4j:$koinVersion")
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.9.10'
+
+    //config
+    compile("com.uchuhimo:konf:$uchuhimo_version")
+
+    //db orm
+    //in memorydb
+    compile "com.h2database:h2:$h2_version"
+    //orm
+    compile "org.jetbrains.exposed:exposed:$exposed_version"
+    //connection pooling
+    compile "com.zaxxer:HikariCP:$hikari_version"
+    //migration
+    compile "org.flywaydb:flyway-core:$fly_way"
+
+    //logging
+    compile("ch.qos.logback.contrib:logback-json-classic:0.1.5")
+    compile("ch.qos.logback.contrib:logback-jackson:0.1.5")
+    compile("io.github.microutils:kotlin-logging:1.7.6")
+
+    //testing
+    testCompile "org.assertj:assertj-core:$assertj_version"
+    testCompile "org.junit.jupiter:junit-jupiter-engine:$jupiter_version"
+    testCompile "com.h2database:h2:$h2_version"
+
+    testCompile "io.ktor:ktor-server-tests:$ktor_version"
+    testCompile "org.koin:koin-test:$koinVersion"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
+}
+
+jar.enabled = true
+jar {
+    archiveName = 'Revolute.jar'
+    manifest {
+        attributes "Main-Class": mainClassName
+    }
+    from(configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+}
+clean.doFirst {
+    delete "${rootDir}" + File.separator + "target" + File.separator
+    delete "${rootDir}" + File.separator + "build" + File.separator
+    delete "${rootDir}" + File.separator + "logs" + File.separator
+}
