@@ -1,6 +1,6 @@
 #### Simple Money Transfer Example Using Kotlin
 
-######Frameworks Used
+###### Frameworks Used
 * Kotlin
 * Ktor (Framework for building asynchronous servers and clients in connected systems using kotlin)
 * Koin (Dependency Injection)
@@ -9,7 +9,7 @@
 * uchuhimo (for Config)
 * Flyway (For database migration)
 
-######Data Model Concept
+###### Data Model Concept
 The implementation show only the transfer part out of the huge process , ignoring any other
 before and after processing<br>
 
@@ -30,7 +30,7 @@ Transfer:<br/>
  in certain time frame , or waiting response from other service and then update the balances
  
 
-######How to start?
+###### How to start?
 * Please Generate self contained Jar (**gradle clean build** is good option :D )
 * Start the server by java -jar build/libs/Revolute.jar
 * Use Curl or Insomnia (it's cool) to trigger your calls
