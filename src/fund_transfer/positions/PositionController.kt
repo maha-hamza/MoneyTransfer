@@ -3,6 +3,7 @@ package fund_transfer.positions
 import config.body
 import config.respondNullable
 import io.ktor.application.ApplicationCall
+import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -18,7 +19,10 @@ class PositionController : KoinComponent {
 
     suspend fun createPosition(call: ApplicationCall) {
         val position = call.body<NewPosition>()
-        call.respond(positionService.createPosition(position = position))
+        call.respond(
+            HttpStatusCode.Created,
+            positionService.createPosition(position = position)
+        )
     }
 
     suspend fun getAllPositions(call: ApplicationCall) {

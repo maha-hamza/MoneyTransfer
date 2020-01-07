@@ -19,49 +19,49 @@ val exceptionHandling: StatusPages.Configuration.() -> Unit = {
 
     exception<BlockedAccountException> { cause ->
         call.respond(
-            HttpStatusCode.NotFound,
+            HttpStatusCode.BadRequest,
             cause.message ?: "account is Blocked"
         )
     }
 
     exception<ClosedAccountException> { cause ->
         call.respond(
-            HttpStatusCode.NotFound,
+            HttpStatusCode.BadRequest,
             cause.message ?: "account is closed"
         )
     }
 
     exception<LockedAccountException> { cause ->
         call.respond(
-            HttpStatusCode.NotFound,
+            HttpStatusCode.BadRequest,
             cause.message ?: "Account is under processing in another transaction"
         )
     }
 
     exception<InsufficientBalanceException> { cause ->
         call.respond(
-            HttpStatusCode.NotFound,
+            HttpStatusCode.BadRequest,
             cause.message ?: "Insufficient balance in sender account"
         )
     }
 
     exception<SamePositionTransferException> { cause ->
         call.respond(
-            HttpStatusCode.NotFound,
+            HttpStatusCode.BadRequest,
             cause.message ?: "Can't Transfer money to the same account"
         )
     }
 
     exception<NegativeTransferAmountException> { cause ->
         call.respond(
-            HttpStatusCode.NotFound,
+            HttpStatusCode.BadRequest,
             cause.message ?: "Can't Transfer negative amount"
         )
     }
 
     exception<BodyDeserializationException> { cause ->
         call.respond(
-            HttpStatusCode.NotFound,
+            HttpStatusCode.BadRequest,
             cause.message!!
         )
     }

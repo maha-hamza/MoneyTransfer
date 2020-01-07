@@ -89,7 +89,7 @@ class TransferControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.NotFound)
+                    .status(HttpStatusCode.BadRequest)
                     .contentType(PlainUtf8)
                     .body<String>()
                     .isEqualTo("Sender Account is Blocked")
@@ -111,7 +111,7 @@ class TransferControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.NotFound)
+                    .status(HttpStatusCode.BadRequest)
                     .contentType(PlainUtf8)
                     .body<String>()
                     .isEqualTo("Account is under processing in another transaction")
@@ -133,7 +133,7 @@ class TransferControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.NotFound)
+                    .status(HttpStatusCode.BadRequest)
                     .contentType(PlainUtf8)
                     .body<String>()
                     .isEqualTo("Insufficient balance in sender account")
@@ -158,7 +158,7 @@ class TransferControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.NotFound)
+                    .status(HttpStatusCode.BadRequest)
                     .contentType(PlainUtf8)
                     .body<String>()
                     .isEqualTo("Sender account is closed")
@@ -182,7 +182,7 @@ class TransferControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.NotFound)
+                    .status(HttpStatusCode.BadRequest)
                     .contentType(PlainUtf8)
                     .body<String>()
                     .isEqualTo("Can't Transfer negative amount")
@@ -205,7 +205,7 @@ class TransferControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.NotFound)
+                    .status(HttpStatusCode.BadRequest)
                     .contentType(PlainUtf8)
                     .body<String>()
                     .isEqualTo("Can't Transfer money to the same account")
@@ -253,7 +253,7 @@ class TransferControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.NotFound)
+                    .status(HttpStatusCode.BadRequest)
                     .contentType(PlainUtf8)
                     .body<String>()
                     .isEqualTo("Receiver Account is Blocked")
@@ -278,7 +278,7 @@ class TransferControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.NotFound)
+                    .status(HttpStatusCode.BadRequest)
                     .contentType(PlainUtf8)
                     .body<String>()
                     .isEqualTo("Receiver Account is closed")

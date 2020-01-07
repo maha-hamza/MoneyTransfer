@@ -192,7 +192,7 @@ class PositionControllerTest : AbstractDBTest() {
                 )
             ) {
                 assertThat(response)
-                    .status(HttpStatusCode.OK)
+                    .status(HttpStatusCode.Created)
                     .contentType(JsonUtf8)
                     .body<Position>()
                     .isEqualToIgnoringGivenFields(
