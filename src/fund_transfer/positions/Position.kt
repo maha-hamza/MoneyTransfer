@@ -2,6 +2,7 @@ package fund_transfer.positions
 
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.Table
+import java.math.BigDecimal
 import java.time.Instant
 
 object Positions : Table() {
@@ -9,7 +10,7 @@ object Positions : Table() {
     val portfolioId = varchar(name = "portfolio_id", length = 50)
     val dateOpened = datetime("date_opened")
     val dateClosed = datetime("date_closed").nullable()
-    val balance = double("balance").nullable()
+    val balance = decimal("balance", 20, 2).nullable()
     val blocked = bool("blocked")
     val locked = bool("locked")
     val positionType = varchar("position_type", 20)
@@ -22,7 +23,7 @@ data class Position(
     val portfolioId: String,
     val dateOpened: Instant,
     val dateClosed: Instant?,
-    val balance: Double = 0.0,
+    val balance: BigDecimal = BigDecimal.ZERO,
     val blocked: Boolean = false,
     val locked: Boolean = false,
     val positionType: String?,
@@ -32,7 +33,7 @@ data class Position(
 
 data class NewPosition(
     val portfolioId: String,
-    val balance: Double,
+    val balance: BigDecimal,
     val positionType: String?,
     val assetType: AssetType,
     val comments: String? = null
@@ -44,7 +45,7 @@ fun toPosition(row: ResultRow): Position =
         portfolioId = row[Positions.portfolioId],
         dateOpened = row[Positions.dateOpened].let { Instant.ofEpochMilli(it.millis) },
         dateClosed = row[Positions.dateClosed]?.let { Instant.ofEpochMilli(it.millis) },
-        balance = row[Positions.balance]!!,
+        balance = row[Positions.balance] ?: BigDecimal.ZERO,
         blocked = row[Positions.blocked],
         locked = row[Positions.locked],
         positionType = row[Positions.positionType],

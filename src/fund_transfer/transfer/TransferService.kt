@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.update
 import org.joda.time.DateTime
 import org.koin.core.KoinComponent
 import org.koin.core.inject
+import java.math.BigDecimal
 import java.sql.Connection
 import java.time.Instant
 import java.util.*
@@ -40,7 +41,7 @@ class TransferService : KoinComponent {
                 }
             }
             positionService.lockPosition(transfer.fromPosition)
-            
+
             positionService.updateBalance(id = from!!.id, newBalance = from.balance.minus(transfer.amount))
             positionService.updateBalance(id = to!!.id, newBalance = to.balance.plus(transfer.amount))
 
@@ -73,7 +74,7 @@ class TransferService : KoinComponent {
             from.locked -> throw LockedAccountException(null)
             from.balance < transfer.amount -> throw InsufficientBalanceException(null)
             from.dateClosed != null -> throw ClosedAccountException("Sender account is closed")
-            transfer.amount < 0.0 -> throw NegativeTransferAmountException(null)
+            transfer.amount < BigDecimal.ZERO -> throw NegativeTransferAmountException(null)
             transfer.fromPosition == transfer.toPosition -> throw SamePositionTransferException(null)
             else -> {
                 to ?: throw PositionNotFoundException("Receiver Position Not found")

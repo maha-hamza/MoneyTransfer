@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS transfers
    to_position    VARCHAR(50)                 NOT NULL                                ,
    initiated_at   DATE                        Not NULL                                ,
    finished_at    DATE                                                                ,
-   amount         DOUBLE                                                              ,
+   amount         DECIMAL(20,2)                                                       ,
    status         VARCHAR(10)                                                         ,
    comments       VARCHAR(255)
 );

@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.joda.time.DateTime
 import org.koin.core.KoinComponent
+import java.math.BigDecimal
 import java.sql.Connection
 import java.time.Instant
 import java.util.*
@@ -109,7 +110,7 @@ class PositionService : KoinComponent {
     //so validation is on the caller service
     fun updateBalance(
         id: String,
-        newBalance: Double
+        newBalance: BigDecimal
     ): Position {
         return transaction {
             Positions.update({ Positions.id eq id }) {

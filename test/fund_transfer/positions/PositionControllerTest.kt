@@ -9,6 +9,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.Instant
 
 class PositionControllerTest : AbstractDBTest() {
@@ -180,13 +181,12 @@ class PositionControllerTest : AbstractDBTest() {
 
         @Test
         fun `should create position`() {
-
             handle(
                 uri = "/api/positions",
                 method = HttpMethod.Post,
                 body = NewPosition(
                     portfolioId = "port-id",
-                    balance = 100.0,
+                    balance = BigDecimal.valueOf(100),
                     positionType = "Money Account",
                     assetType = AssetType.EGP
                 )
@@ -198,7 +198,7 @@ class PositionControllerTest : AbstractDBTest() {
                     .isEqualToIgnoringGivenFields(
                         Position(
                             portfolioId = "port-id",
-                            balance = 100.0,
+                            balance = BigDecimal.valueOf(10000,2),
                             positionType = "Money Account",
                             assetType = AssetType.EGP,
                             id = "ignored",

@@ -10,6 +10,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.time.Instant
 
 class TransferIT : AbstractDBTest() {
@@ -17,7 +18,7 @@ class TransferIT : AbstractDBTest() {
     private val positionService by lazyInject<PositionService>()
     @Test
     fun `Should make transfer and ensure data is reflected in profiles`() {
-        val from = createPosition(balance = 1000.0)
+        val from = createPosition(balance = BigDecimal(1000.0))
         val to = createPosition()
 
         handle(
@@ -26,7 +27,7 @@ class TransferIT : AbstractDBTest() {
             body = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
         ) {
             assertThat(response)
@@ -37,7 +38,7 @@ class TransferIT : AbstractDBTest() {
                     Transfer(
                         fromPosition = from.id,
                         toPosition = to.id,
-                        amount = 100.0,
+                        amount = BigDecimal.valueOf(10000,2),
                         status = TransferStatus.ACCEPTED,
                         initiatedAt = Instant.now(),
                         finishedAt = Instant.now(),
@@ -53,8 +54,8 @@ class TransferIT : AbstractDBTest() {
 
         val senderPosition = positionService.getPosition(from.id)
         val receiverPosition = positionService.getPosition(to.id)
-        Assertions.assertThat(senderPosition!!.balance).isEqualTo(900.0)
-        Assertions.assertThat(receiverPosition!!.balance).isEqualTo(100.0)
+        Assertions.assertThat(senderPosition!!.balance).isEqualTo(BigDecimal.valueOf(90000,2))
+        Assertions.assertThat(receiverPosition!!.balance).isEqualTo(BigDecimal.valueOf(10000,2))
 
     }
 }

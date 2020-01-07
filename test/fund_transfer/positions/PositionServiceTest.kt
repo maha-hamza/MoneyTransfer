@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.koin.core.KoinComponent
+import java.math.BigDecimal
 import java.time.Instant
 
 class PositionServiceTest : AbstractDBTest(), KoinComponent {
@@ -21,7 +22,7 @@ class PositionServiceTest : AbstractDBTest(), KoinComponent {
         fun `Should create position`() {
             val newPosition = NewPosition(
                 portfolioId = "port-id",
-                balance = 100.0,
+                balance = BigDecimal(100.0),
                 positionType = "Money Account",
                 assetType = AssetType.EGP
             )
@@ -30,7 +31,7 @@ class PositionServiceTest : AbstractDBTest(), KoinComponent {
             assertThat(position).isEqualToIgnoringGivenFields(
                 Position(
                     portfolioId = "port-id",
-                    balance = 100.0,
+                    balance = BigDecimal.valueOf(10000,2),
                     positionType = "Money Account",
                     assetType = AssetType.EGP,
                     id = "ignored",
@@ -53,7 +54,7 @@ class PositionServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Should get position by id`() {
-            val position = createPosition(id = "any-id", balance = 2000.0)
+            val position = createPosition(id = "any-id", balance = BigDecimal(2000.0))
 
             val result = positionService.getPosition("any-id")
             assertThat(result).isEqualTo(position)
@@ -67,9 +68,9 @@ class PositionServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Should return all positions while flags are false`() {
-            val position1 = createPosition(balance = 1000.0)
-            val position2 = createPosition(balance = 2000.0)
-            val position3 = createPosition(balance = 3000.0)
+            val position1 = createPosition(balance = BigDecimal(1000.0))
+            val position2 = createPosition(balance = BigDecimal(2000.0))
+            val position3 = createPosition(balance = BigDecimal(3000.0))
 
             val result = positionService.getPositions(locked = false, blocked = false)
             assertThat(result).containsExactlyInAnyOrder(position1, position2, position3)
@@ -77,9 +78,9 @@ class PositionServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Should return locked positions`() {
-            val position1 = createPosition(balance = 1000.0, locked = true)
-            createPosition(balance = 2000.0)
-            val position3 = createPosition(balance = 3000.0, locked = true)
+            val position1 = createPosition(balance = BigDecimal(1000.0), locked = true)
+            createPosition(balance = BigDecimal(2000.0))
+            val position3 = createPosition(balance = BigDecimal(3000.0), locked = true)
 
             val result = positionService.getPositions(locked = true, blocked = false)
             assertThat(result).containsExactlyInAnyOrder(position1, position3)
@@ -87,9 +88,9 @@ class PositionServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Should return blocked positions`() {
-            createPosition(balance = 1000.0)
-            val position2 = createPosition(balance = 2000.0, blocked = true)
-            createPosition(balance = 3000.0)
+            createPosition(balance =  BigDecimal(1000.0))
+            val position2 = createPosition(balance =  BigDecimal(2000.0), blocked = true)
+            createPosition(balance =  BigDecimal(3000.0))
 
             val result = positionService.getPositions(locked = false, blocked = true)
             assertThat(result).containsExactlyInAnyOrder(position2)
@@ -103,9 +104,9 @@ class PositionServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Should return empty list if no match found`() {
-            createPosition(balance = 1000.0)
-            createPosition(balance = 2000.0)
-            createPosition(balance = 3000.0)
+            createPosition(balance =  BigDecimal(1000.0))
+            createPosition(balance =  BigDecimal(2000.0))
+            createPosition(balance =  BigDecimal(3000.0))
 
             val result = positionService.getPositions(locked = true, blocked = true)
             assertThat(result).isEmpty()
@@ -117,10 +118,11 @@ class PositionServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Should update Balance Correctly`() {
-            val position = createPosition(balance = 2000.0)
+            val position = createPosition(balance =  BigDecimal(2000.0))
 
-            val result = positionService.updateBalance(id = position.id, newBalance = position.balance + 1000)
-            assertThat(result.balance).isEqualTo(3000.0)
+            val result =
+                positionService.updateBalance(id = position.id, newBalance = position.balance + BigDecimal(1000.0))
+            assertThat(result.balance).isEqualTo(BigDecimal.valueOf(300000,2))
         }
 
         @Test

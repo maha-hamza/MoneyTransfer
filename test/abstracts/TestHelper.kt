@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.joda.time.DateTime
+import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
 
@@ -18,7 +19,7 @@ fun createPosition(
     id: String = "REV${(1 until 100).random()}-${UUID.randomUUID()}-00",
     portfolioId: String = "any_p_id",
     assetType: AssetType = AssetType.EUR,
-    balance: Double = 0.0,
+    balance: BigDecimal = BigDecimal.ZERO,
     comments: String = "",
     blocked: Boolean = false,
     locked: Boolean = false,

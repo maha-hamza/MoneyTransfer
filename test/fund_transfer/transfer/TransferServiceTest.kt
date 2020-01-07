@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.koin.core.KoinComponent
+import java.math.BigDecimal
 import java.time.Instant
 
 class TransferServiceTest : AbstractDBTest(), KoinComponent {
@@ -28,7 +29,7 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
             val transfer = NewTransfer(
                 fromPosition = "from-any",
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<PositionNotFoundException> {
                 transferService.makeTransfer(transfer)
@@ -43,7 +44,7 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
             val transfer = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<BlockedAccountException> {
                 transferService.makeTransfer(transfer)
@@ -59,7 +60,7 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
             val transfer = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<LockedAccountException> {
                 transferService.makeTransfer(transfer)
@@ -69,13 +70,13 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Fail transfer processing (insufficient balance)`() {
-            val from = createPosition(balance = 50.0)
+            val from = createPosition(balance = BigDecimal(50.0))
             val to = createPosition()
 
             val transfer = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<InsufficientBalanceException> {
                 transferService.makeTransfer(transfer)
@@ -85,13 +86,13 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Fail transfer processing (Sender position is closed)`() {
-            val from = createPosition(balance = 100.0, dateClosed = DateTime.now())
+            val from = createPosition(balance = BigDecimal(100.0), dateClosed = DateTime.now())
             val to = createPosition()
 
             val transfer = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<ClosedAccountException> {
                 transferService.makeTransfer(transfer)
@@ -101,13 +102,13 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Fail transfer processing (Receiver position is closed)`() {
-            val from = createPosition(balance = 100.0)
+            val from = createPosition(balance = BigDecimal(100.0))
             val to = createPosition(dateClosed = DateTime.now())
 
             val transfer = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<ClosedAccountException> {
                 transferService.makeTransfer(transfer)
@@ -117,13 +118,13 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Fail transfer processing (negative transfer amount)`() {
-            val from = createPosition(balance = 1000.0)
+            val from = createPosition(balance = BigDecimal(1000.0))
             val to = createPosition()
 
             val transfer = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = -100.0
+                amount = BigDecimal(-100.0)
             )
             assertThrows<NegativeTransferAmountException> {
                 transferService.makeTransfer(transfer)
@@ -133,12 +134,12 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Fail transfer processing (same position transfer)`() {
-            val position = createPosition(balance = 1000.0)
+            val position = createPosition(balance = BigDecimal(1000.0))
 
             val transfer = NewTransfer(
                 fromPosition = position.id,
                 toPosition = position.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<SamePositionTransferException> {
                 transferService.makeTransfer(transfer)
@@ -148,12 +149,12 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Fail transfer processing (receiver doesn't exist)`() {
-            val from = createPosition(balance = 1000.0)
+            val from = createPosition(balance = BigDecimal(1000.0))
 
             val transfer = NewTransfer(
                 fromPosition = from.id,
                 toPosition = "to",
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<PositionNotFoundException> {
                 transferService.makeTransfer(transfer)
@@ -163,13 +164,13 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Fail transfer processing (receiver position is blocked)`() {
-            val from = createPosition(balance = 1000.0)
+            val from = createPosition(balance = BigDecimal(1000.0))
             val to = createPosition(blocked = true)
 
             val transfer = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
             assertThrows<BlockedAccountException> {
                 transferService.makeTransfer(transfer)
@@ -179,13 +180,13 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
         @Test
         fun `Should transfer successfully`() {
-            val from = createPosition(balance = 1000.0)
+            val from = createPosition(balance = BigDecimal(1000.0))
             val to = createPosition()
 
             val newT = NewTransfer(
                 fromPosition = from.id,
                 toPosition = to.id,
-                amount = 100.0
+                amount = BigDecimal(100.0)
             )
 
             val transfer = transferService.makeTransfer(newT)
@@ -197,7 +198,7 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
                     toPosition = to.id,
                     initiatedAt = Instant.ofEpochMilli(0),
                     finishedAt = Instant.ofEpochMilli(0),
-                    amount = 100.0,
+                    amount = BigDecimal.valueOf(10000,2),
                     status = TransferStatus.ACCEPTED,
                     comments = null
                 ),
@@ -208,8 +209,8 @@ class TransferServiceTest : AbstractDBTest(), KoinComponent {
 
             val sender = positionService.getPosition(from.id)
             val receiver = positionService.getPosition(to.id)
-            assertThat(sender?.balance).isEqualTo(900.0)
-            assertThat(receiver?.balance).isEqualTo(100.0)
+            assertThat(sender?.balance).isEqualTo(BigDecimal.valueOf(90000,2))
+            assertThat(receiver?.balance).isEqualTo(BigDecimal.valueOf(10000,2))
         }
     }
 
