@@ -44,6 +44,10 @@ Transfer:<br/>
       PATCH "/api/positions/unblock/{id}"-> unblock Position
       POST  "/api/transfer"              -> Make transfer
       GET   "/api/transfer/{id}"         -> Get transfer
+      
+##### For Concurrency : 
+     https://blog.mindorks.com/mastering-kotlin-coroutines-in-android-step-by-step-guide 
+               (It's very cool illustration of concurrency in kotlin coroutines)
 
 
 

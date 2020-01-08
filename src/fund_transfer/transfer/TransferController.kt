@@ -12,6 +12,7 @@ class TransferController : KoinComponent {
 
     private val transferService by inject<TransferService>()
 
+    @Synchronized
     suspend fun makeTransfer(call: ApplicationCall) {
         val transfer = call.body<NewTransfer>()
         call.respond(
