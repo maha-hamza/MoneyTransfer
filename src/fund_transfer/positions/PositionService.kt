@@ -46,7 +46,7 @@ class PositionService : KoinComponent {
                 it[id] = "REV${(1 until 100).random()}-${UUID.randomUUID()}-00"
                 it[portfolioId] = position.portfolioId
                 it[dateOpened] = DateTime(Instant.now().toEpochMilli())
-                it[positionType] = position.positionType!!
+                it[positionType] = position.positionType ?: "Money Account"
                 it[assetType] = position.assetType
                 it[balance] = position.balance
                 it[comments] = position.comments ?: ""
