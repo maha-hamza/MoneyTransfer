@@ -85,6 +85,25 @@ class TransferIT : AbstractDBTest() {
         }
     }
 
+    @Test
+    fun `Should handle one direction multiple transfers successfully`() {
+        runBlocking {
+            val from = createPosition(balance = BigDecimal.TEN)
+            val to = createPosition(balance = BigDecimal.TEN)
+
+            1.rangeTo(5).map {
+                launch {
+                    makeTransaction(from, to, BigDecimal.ONE)
+                }
+            }.forEach { job -> job.join() }
+
+            assertThat(positionService.getPosition(from.id)?.balance)
+                .isEqualTo(BigDecimal.valueOf(500, 2))
+            assertThat(positionService.getPosition(to.id)?.balance)
+                .isEqualTo(BigDecimal.valueOf(1500, 2))
+        }
+    }
+
     private fun makeTransaction(from: Position, to: Position, amount: BigDecimal) {
         handle(
             uri = "/api/transfer",
